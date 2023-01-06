@@ -8,14 +8,14 @@
 #include <sys/socket.h>
 #include <sys/types.h>
 char buffer[1024];
-int option;
+int option; //store the values of the menu
 
 int execute(char buffer[1024]){
 	while(1){
-		if(system(buffer) != 0){
-			break;
+		if(system(buffer) != 0){       //ie what is in buffer is ran by the sys cmd in variable called buffer
+			break;                   //if it executes and returnes value diff from zero implies failure hence break
 		}
-		fgets(buffer, 1024, stdin);
+		fgets(buffer, 1024, stdin);     //collects from second input etc and executes here
 		
 	
    }
@@ -26,7 +26,7 @@ return 0;
 
 int main(int argc, char * argv[]){
  		  char *ip;
-		  int port;
+		  int port;		//stores value of port number
 
 		  int sock;
 		  struct sockaddr_in addr;
@@ -34,15 +34,15 @@ int main(int argc, char * argv[]){
 		  char buffer[1024];
 		  int n;
 		  
-		  if (argc<3)
+		  if (argc<3)		//stores filename? ip and port num indexes ie lenght of array
 		  {
 		    printf("provide required command-line inputs as- <filename.c> <server_IP_addr> <port>");
 		    exit(1);
 		  }
-		  port = atoi(argv[2]);
-		  sock = socket(AF_INET, SOCK_STREAM, 0);
+		  port = atoi(argv[2]);		 //atoi is predefined func ie at position 2 get port num
+		  sock = socket(AF_INET, SOCK_STREAM, 0);             //default
 		  // check if socket is created properly
-		  if (sock < 0){
+		  if (sock < 0){			//ie if one of the parameters above is missing, error
 		    perror("[-]Socket error");
 		    exit(1);
 		  }
@@ -64,7 +64,7 @@ printf("################################################################");
 printf("\nWelcome Client to NetApp");
 printf("\nWHich feature do you want to use, select by number");
 
-while(1){
+while(1){		 //ensures you don't leave the application
 	printf("\n1: Messaging\n2: Running Commands\n3: File Sharing\n4: Exit\n");
 	scanf("%d", &option);
 	if(option == 1){
@@ -77,7 +77,7 @@ while(1){
 		  //execute(buffer);
 		  //strcpy(buffer, msg);
 		 //printf("Client --> %s\n", buffer);
-		  n = write(sock, buffer, strlen(buffer));
+		  n = write(sock, buffer, strlen(buffer));		//here client writes message to server
 		  if (n <0)
 		  {
 		  	printf("Error in writing...");
@@ -85,7 +85,7 @@ while(1){
 		  }
 
 		  bzero(buffer, 1024); // clear buffer
-		  n = read(sock, buffer, 1024);
+		  n = read(sock, buffer, 1024);			//here client reads message from server
 		  if (n<0)
 		  {
 		  	printf("Error in reading...");
@@ -105,13 +105,13 @@ while(1){
 	}
 	else if(option == 2){
 		printf("Enter a command\n");
-		fgets(buffer, 1024, stdin);
+		fgets(buffer, 1024, stdin);		//very effective compared to scanf
 		execute(buffer);
 	
 	}
 	else if(option == 3){
 		break;
-	
+	//enter code for file transfer
 	}
 	else if(option == 4){
 		break;
