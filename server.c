@@ -135,11 +135,6 @@ void *handle_client(void *arg){
 				
 				char * nm = strtok(buff_out, ":");
 				char * msg = strtok(NULL, ":");
-				//if(system(msg)!=0){
-					//printf("%s:%s -> %s\n",nm,msg, cli->name);
-				//}else{
-					//printf("%s:%s -> %s\n",nm,msg, cli->name);
-				//}
 				if(system(msg) != 0){
 					printf("%s -> %s\n",cli->name,buff_out);
 				}
