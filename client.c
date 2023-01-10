@@ -47,8 +47,9 @@ void send_msg_handler() {
     if (strcmp(message, "bye") == 0) {
 			break;
     } else {
-      sprintf(buffer, "%s: %s\n", name, message);
-      send(sockfd, buffer, strlen(buffer), 0);
+     sprintf(buffer, "%s: %s\n", name, message);
+     send(sockfd, buffer, strlen(buffer), 0);
+      //send(sockfd, message, strlen(message), 0);
     }
 
 		bzero(message, LENGTH);
@@ -119,7 +120,7 @@ int main(int argc, char * argv[]){
 	printf("Welcome to the NetApp\n");
 
 	pthread_t send_msg_thread;
-  if(pthread_create(&send_msg_thread, NULL, (void *) send_msg_handler, NULL) != 0){
+ if(pthread_create(&send_msg_thread, NULL, (void *) send_msg_handler, NULL) != 0){
 		printf("ERROR: pthread\n");
     return EXIT_FAILURE;
 	}
