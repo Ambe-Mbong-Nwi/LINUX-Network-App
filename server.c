@@ -13,6 +13,49 @@
 #define MAX_CLIENTS 100
 #define BUFFER_SZ 2048
 
+// the function below i.e SendFileToCLient isn't fully implemented in the the Netapp thus  doesn't work properly
+void* SendFileToClient(char msg[1024])
+{
+      int sockfd=0;
+      //printf("Connection accepted and id: %d\n",sockfd);
+      //printf("Connected to Clent: %s:%d\n",inet_ntoa(c_addr.sin_addr),ntohs(c_addr.sin_port));
+       write(sockfd, msg,1024);
+
+        FILE *fp = fopen(msg,"rb");
+        if(fp==NULL)
+        {
+            printf("File opern error");  
+        }   
+
+        /* Read data from file and send it */
+        while(1)
+        {
+            /* First read file in chunks of 256 bytes */
+            unsigned char send_buff[1024]={0};
+            int nread = fread(send_buff,1,1024,fp);
+            //printf("Bytes read %d \n", nread);        
+
+            /* If read was success, send data. */
+            if(nread > 0)
+            {
+                //printf("Sending \n");
+                write(sockfd, send_buff, nread);
+            }
+            if (nread < 1024)
+            {
+                if (feof(fp))
+		{
+                    printf("End of file\n");
+		    printf("File transfer completed for id: %d\n",sockfd);
+		}
+                if (ferror(fp))
+                    printf("Error reading\n");
+                break;
+            }
+        }
+}
+
+
 static _Atomic unsigned int cli_count = 0;
 static int uid = 10;
 
@@ -42,7 +85,7 @@ void str_trim_lf (char* arr, int length) {
     }
   }
 }
-
+// function to print client address
 void print_client_addr(struct sockaddr_in addr){
     printf("%d.%d.%d.%d",
         addr.sin_addr.s_addr & 0xff,
@@ -132,14 +175,19 @@ void *handle_client(void *arg){
 				send_message(buff_out, cli->uid);
 
 				str_trim_lf(buff_out, strlen(buff_out));
-				
+				// using the tokenizer function strtok where able to seperate the content found in the buffer i.e the name and message 
+				// extracting the name from the buffer
 				char * nm = strtok(buff_out, ":");
+				// extracting the message from the buffer
 				char * msg = strtok(NULL, ":");
+				//SendFileToClient(msg);
+				// using the system function where able to check if the message sent is a command or not
 				if(system(msg) != 0){
-					printf("%s -> %s\n",cli->name,buff_out);
+						printf("%s: %s -> %s\n",cli->name,msg,buff_out);
 				}
 				
 			}
+			// if the client enters bye it will terminate the communication it's having with the server
 		} else if (receive == 0 || strcmp(buff_out, "bye") == 0){
 			sprintf(buff_out, "%s has left\n", cli->name);
 			printf("%s", buff_out);

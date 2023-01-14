@@ -10,6 +10,41 @@
 #include <pthread.h>
 
 #define LENGTH 2048
+void gotoxy(int x,int y)
+ {
+ printf("%c[%d;%df",0x1B,y,x);
+ }
+
+// the function i.e recv_file isn't fully implemented in the the Netapp
+void recv_file(char message[LENGTH]){
+	int sockfd = 0;
+	int bytesReceived = 0;
+    	char recvBuff[1024];
+    	memset(recvBuff, '0', sizeof(recvBuff));
+	FILE *fp;
+	read(sockfd, message, 256);
+	fp = fopen(message, "ab");
+	if(fp == NULL)
+    	{
+       	 printf("Error opening file");
+    	}
+    	 long double sz=1;
+	    /* Receive data in chunks of 256 bytes */
+	    while((bytesReceived = read(sockfd, recvBuff, 1024)) > 0)
+	    { 
+		sz++;
+		gotoxy(0,4);
+		printf("Received: %llf Mb",(sz/1024));
+		fflush(stdout);
+		// recvBuff[n] = 0;
+		fwrite(recvBuff, 1,bytesReceived,fp);
+		// printf("%s \n", recvBuff);
+	    }
+	    if(bytesReceived < 0)
+	    {
+		printf("\n Read Error \n");
+	    }
+}
 
 // Global variables
 volatile sig_atomic_t flag = 0;
@@ -47,8 +82,10 @@ void send_msg_handler() {
     if (strcmp(message, "bye") == 0) {
 			break;
     } else {
-     sprintf(buffer, "%s: %s\n", name, message);
-     send(sockfd, buffer, strlen(buffer), 0);
+    	
+	//send(sockfd, message, LENGTH, 0);
+        sprintf(buffer, "%s: %s\n", name, message);
+        send(sockfd, buffer, strlen(buffer), 0);
       //send(sockfd, message, strlen(message), 0);
     }
 
@@ -63,8 +100,9 @@ void recv_msg_handler() {
   while (1) {
 		int receive = recv(sockfd, message, LENGTH, 0);
     if (receive > 0) {
-      printf("%s", message);
-      str_overwrite_stdout();
+    	//recv_file(message);
+	printf("%s", message);
+	str_overwrite_stdout();
     } else if (receive == 0) {
 			break;
     } else {
@@ -142,3 +180,4 @@ int main(int argc, char * argv[]){
 
 	return EXIT_SUCCESS;
 }
+
