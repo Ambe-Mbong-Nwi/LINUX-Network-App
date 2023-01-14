@@ -2,8 +2,8 @@
 
 ##
 ## FEATURES
-# SERVER TO MULTIPLE CLIENT COMMUNICATION 
-# RUNNING OF LINUX COMMANDS
+# - Server to multiple client communication
+# - Running linux commands
 
 ## It's a Network app implemented in c programming. And is based on the TCP model.
 ## In order to run the app you need to open two terminal windows that contain the server and client code. In the first terminal your to run the server code by typing:
